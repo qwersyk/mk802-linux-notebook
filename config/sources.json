@@ -1,0 +1,30 @@
+{
+  "busybox-1.37.0.tar.bz2": {
+    "url": "https://busybox.net/downloads/busybox-1.37.0.tar.bz2",
+    "sha256": "3311dff32e746499f4df0d5df04d7eb396382d7e108bb9250e7b519b837043a4"
+  },
+  "wpa_supplicant-2.11.tar.gz": {
+    "url": "https://w1.fi/releases/wpa_supplicant-2.11.tar.gz",
+    "sha256": "912ea06f74e30a8e36fbb68064d6cdff218d8d591db0fc5d75dee6c81ac7fc0a"
+  },
+  "compiler-rt-20.1.8.src.tar.xz": {
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/compiler-rt-20.1.8.src.tar.xz",
+    "sha256": "15277402f6fd63397c0917a5c7171cda82d16d226094b828c1ed0f58f73b9c69"
+  },
+  "musl-1.2.5.tar.gz": {
+    "url": "https://musl.libc.org/releases/musl-1.2.5.tar.gz",
+    "sha256": "a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4"
+  },
+  "cmake-20.1.8.src.tar.xz": {
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.8/cmake-20.1.8.src.tar.xz",
+    "sha256": "3319203cfd1172bbac50f06fa68e318af84dcb5d65353310c0586354069d6634"
+  },
+  "dropbear-2024.86.tar.gz": {
+    "url": "https://codeload.github.com/mkj/dropbear/tar.gz/refs/tags/DROPBEAR_2024.86",
+    "sha256": "d16285f0233a2400a84affa0235e34a71c660908079c639fdef889c2e90c9f5f"
+  },
+  "libnl-3.11.0.tar.gz": {
+    "url": "https://github.com/thom311/libnl/releases/download/libnl3_11_0/libnl-3.11.0.tar.gz",
+    "sha256": "2a56e1edefa3e68a7c00879496736fdbf62fc94ed3232c0baba127ecfa76874d"
+  }
+}

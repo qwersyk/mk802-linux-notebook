@@ -1,0 +1,7 @@
+{
+  "hostname": "tiny-linux",
+  "interface": "wlan0",
+  "wifi_backend": "nl80211,wext",
+  "ssid": "",
+  "ssh_port": 22
+}

@@ -1,0 +1,20 @@
+#!/bin/sh
+# Optional local-cable diagnostic bridge, enabled only when the owner supplies adbd.
+[ -x /sbin/adbd ] || exit 0
+F=/sys/bus/platform/drivers/usb20_otg/force_usb_mode
+[ ! -w "$F" ] || echo 2 > "$F"
+U=/sys/class/android_usb/android0
+[ -d "$U" ] || exit 1
+echo 0 > "$U/enable"
+echo 2207 > "$U/idVendor"
+echo 0006 > "$U/idProduct"
+printf %s Linux-debug > "$U/iProduct"
+printf %s linux-local > "$U/iSerial"
+echo adb > "$U/functions"
+mdev -s
+if [ -c /dev/android_adb ]; then
+    /bin/busybox chown 0:2000 /dev/android_adb
+    /bin/busybox chmod 0660 /dev/android_adb
+fi
+/sbin/adbd > /run/adbd.log 2>&1 &
+echo 1 > "$U/enable"

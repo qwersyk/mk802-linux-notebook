@@ -1,0 +1,26 @@
+#!/bin/sh
+export PATH=/bin:/sbin
+case "$1" in
+    deconfig)
+        ip addr flush dev "$interface"
+        ip route flush dev "$interface"
+        : > /etc/resolv.conf
+        ;;
+    bound|renew)
+        mask=${subnet:-255.255.255.0}
+        ifconfig "$interface" "$ip" netmask "$mask" || exit 1
+        while ip route del default dev "$interface" 2>/dev/null; do :; done
+        for gateway in $router; do
+            ip route add default via "$gateway" dev "$interface" && break
+        done
+        : > /etc/resolv.conf
+        for server in $dns; do
+            # Keep resolver output to address characters, never DHCP text.
+            case "$server" in
+                ''|*[!0-9a-fA-F.:]*) continue ;;
+            esac
+            printf 'nameserver %s\n' "$server" >> /etc/resolv.conf
+        done
+        ;;
+esac
+exit 0

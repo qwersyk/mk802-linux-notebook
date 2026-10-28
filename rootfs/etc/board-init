@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+[ "$(uname -r)" = '3.0.36+' ] || { echo 'Unsupported kernel ABI'; exit 1; }
+[ -r /etc/firmware/WIFI_RAM_CODE ] || { echo 'MT5931 firmware missing'; exit 1; }
+if [ ! -d /sys/class/net/wlan0 ]; then
+    insmod /lib/modules/mt5931.ko
+fi
+for attempt in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+    [ ! -d /sys/class/net/wlan0 ] || exit 0
+    sleep 1
+done
+echo 'MT5931 did not create wlan0'
+exit 1

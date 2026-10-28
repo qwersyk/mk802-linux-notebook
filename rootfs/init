@@ -1,0 +1,60 @@
+#!/bin/sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+umask 077
+
+mount -t proc proc /proc || exit 1
+mount -t sysfs sysfs /sys || exit 1
+mount -t devtmpfs devtmpfs /dev || exit 1
+mkdir -p /dev/pts
+mount -t devpts -o mode=0620 devpts /dev/pts || exit 1
+mount -t tmpfs -o mode=0755,size=16m tmpfs /run || exit 1
+mount -t tmpfs -o mode=1777,size=16m tmpfs /tmp || exit 1
+
+[ ! -r /etc/random.seed ] || cat /etc/random.seed > /dev/urandom
+echo /bin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+chmod 666 /dev/null /dev/zero /dev/random /dev/urandom /dev/tty /dev/ptmx
+hostname "$(cat /etc/hostname)"
+ip addr add 127.0.0.1/8 dev lo
+ip link set lo up
+/etc/usb-debug
+if [ -x /sbin/adbd ]; then
+    exec >/run/boot.log 2>&1
+    set -x
+fi
+(
+    while :; do
+        dropbear -F -s -j -k -r /etc/dropbear/host_key -p "$(cat /etc/ssh-port)"
+        sleep 5
+    done
+) >/run/dropbear.log 2>&1 &
+
+if ! /etc/board-init; then
+    echo 'Board initialization failed. Network services were not started.'
+else
+    interface=$(cat /etc/network-interface)
+    backend=$(cat /etc/wifi-backend)
+    if ip link set "$interface" up; then
+        (
+            while :; do
+                wpa_supplicant -i "$interface" -D "$backend" -c /etc/wpa_supplicant.conf
+                sleep 5
+            done
+        ) >/run/wifi.log 2>&1 &
+        (
+            while :; do
+                udhcpc -f -i "$interface" -s /usr/share/udhcpc/default.script
+                sleep 5
+            done
+        ) >/run/dhcp.log 2>&1 &
+        echo 'Linux: network services started; association and DHCP may still be pending.'
+    else
+        echo 'Wi-Fi interface unavailable. Check the board setup.'
+    fi
+fi
+
+# PID 1 reaps children; no automatic shell, storage mount or recovery action.
+while :; do
+    sleep 3600 &
+    wait "$!"
+done

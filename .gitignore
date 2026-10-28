@@ -1,0 +1,13 @@
+/build/
+/private/
+/board.json
+.env
+*.img
+*.bin
+*.ko
+*.cpio*
+*.pem
+*.key
+__pycache__/
+.DS_Store
+/network.json
